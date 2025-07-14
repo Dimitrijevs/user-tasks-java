@@ -1,0 +1,62 @@
+# to generate .jar files and skip tests
+# mvn install -DskipTests
+
+# up - starts contaners, --build - rebuilds the images before start, -d - detach mode
+# docker-compose up --build
+
+services:
+  app:
+    # container name 
+    container_name: task-app-java
+
+    # builds an image from a Dockerfile which is in a currect dir
+    build: . 
+
+    # maps port 8080 from a container to the localhost 8080
+    ports: 
+      - "8080:8080"
+
+    # controls starts order, app starts after a postgres
+    depends_on:
+      - postgres
+
+    # connects to a custom network
+    networks:
+      - tasks-network
+
+  postgres:
+    # container name
+    container_name: task-app-postgres
+
+    # downlaods a latest postgres image from the docker hub
+    image: postgres:latest
+
+    # pre defined variable names
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres1234
+      POSTGRES_DB: postgres
+
+    ports:
+      # my 5432 port is already busy so I took 5434 port
+      - "5434:5432"
+
+    # connects to a custom network
+    networks:
+      - tasks-network
+
+    # saving data outside of the container
+    volumes:
+      - postgres-tasks-data:/var/lib/postgresql/data
+
+networks:
+  tasks-network:
+    driver: bridge
+
+    # - bridge: Containers on the same host can talk to each other using service names (app talks to postgres). It's isolated from other networks. Best for local development.
+    # - host: Containers use the host's network directly, like they're running on the host itself. No isolation, good for performance but less secure.
+    # - none: Disables networking for a container, so it can't talk to others or the internet. Used for high-security or offline tasks.
+
+# saves data outside of the container (somewhere in a docker directory)
+volumes:
+  postgres-tasks-data:
