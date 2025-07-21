@@ -29,9 +29,8 @@ public class SecurityConfiguration {
 
         private final AuthenticationProvider authenticationProvider;
 
-        // 1. i need to create filter chain
+        // 1. create filter chain
         // 2. register filters to the filter chain
-        // 3.
 
         // filter chail
         @Bean

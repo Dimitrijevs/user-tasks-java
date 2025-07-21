@@ -27,7 +27,7 @@ public class AuthenticationService {
         // built in
         private final AuthenticationManager authenticationManager;
 
-        // return token to a user
+        // return token to a user after registration
         public AuthenticationResponse register(RegisterRequest request) {
                 User user = User.builder()
                                 .first_name(request.getFirstname())
@@ -44,7 +44,7 @@ public class AuthenticationService {
                 return generateResponseWithToken(jwtToken);
         }
 
-        // return token to a user
+        // return token to a user after login
         public AuthenticationResponse authenticate(AuthenticationRequest request) {
                 authenticationManager.authenticate(
                                 new UsernamePasswordAuthenticationToken(
@@ -58,6 +58,7 @@ public class AuthenticationService {
                 return generateResponseWithToken(jwtToken);
         }
 
+        // generate token
         private AuthenticationResponse generateResponseWithToken(String jwtToken) {
                 return AuthenticationResponse.builder()
                                 .token(jwtToken)
